@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-import config from "./config";
+import config from "../config";
 import axios from "axios";
-import TextForm from "./components/textForm";
+import TextForm from "./textForm";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import Modal from "./components/modal";
+import Modal from "./modal";
+import Preview from "./preview";
 import { useAlert, types } from "react-alert";
 import {
     CodeSlash,
@@ -17,6 +20,7 @@ import {
     BootstrapReboot,
     ArrowBarLeft,
 } from "react-bootstrap-icons";
+import "../css/app.css";
 
 const App = () => {
     const [gitHubInfo, setGitHubInfo] = useState({
@@ -246,7 +250,6 @@ const App = () => {
         setAcknowledgements("");
     };
 
-
     //Fetch user repo, whenever user repo url changes (happens once user is authenticated)
     useEffect(() => {
         // Fetch users repositories to display
@@ -331,72 +334,91 @@ const App = () => {
 
     return (
         <div className="App">
-            <Container>
-                <h1 className="App-header mt-3 text-center">
-                    GitHub README Generator
-                </h1>
-
-                <Form onKeyDown={handleKeyDown}>
-                    <TextForm
-                        id="form-title"
-                        label="Title"
-                        type="text"
-                        placeholder="Project name..."
-                        text="All inputs are currently optional"
-                        value={title}
-                        onChange={handleTitleChange}
-                    ></TextForm>
-                    <TextForm
-                        id="form-description"
-                        label="Description"
-                        as="textarea"
-                        placeholder="Brief Description..."
-                        text="This field will only be generated if the title is present"
-                        value={description}
-                        onChange={handleDescriptionChange}
-                    ></TextForm>
-                    <TextForm
-                        id="form-intro"
-                        label="Introduction"
-                        as="textarea"
-                        placeholder="Why did you create this project..."
-                        value={intro}
-                        onChange={handleIntroChange}
-                    ></TextForm>
-                    <TextForm
-                        id="form-installation "
-                        label="Get Started"
-                        placeholder="Installation instructions..."
-                        as="textarea"
-                        value={installation}
-                        onChange={handleInstallationChange}
-                    ></TextForm>
-                    <TextForm
-                        id="form-usage"
-                        label="Usage"
-                        placeholder="Explain how to use this project..."
-                        as="textarea"
-                        value={usage}
-                        onChange={handleUsageChange}
-                    ></TextForm>
-                    <TextForm
-                        id="form-contribute"
-                        label="Contribute"
-                        placeholder="Explain how people can contribute to this project..."
-                        as="textarea"
-                        value={contribute}
-                        onChange={handleContributeChange}
-                    ></TextForm>
-                    <TextForm
-                        id="form-acknowledgement"
-                        label="Acknowledgements"
-                        placeholder="Anybody you wish to thank for helping or collaborating with you on this project..."
-                        as="textarea"
-                        value={acknowledgements}
-                        onChange={handleAcknowledgementsChange}
-                    ></TextForm>
-                </Form>
-                <div className="mb-5">
+            <h1 className="App-header mt-3 text-center">
+                GitHub README Generator
+            </h1>
+            <Container className="border border-light shadow-sm rounded p-2 bg-white">
+                <Row>
+                    <Col md>
+                        <Form onKeyDown={handleKeyDown}>
+                            <TextForm
+                                id="form-title"
+                                label="Title"
+                                type="text"
+                                placeholder="Project name..."
+                                text="All inputs are currently optional"
+                                value={title}
+                                onChange={handleTitleChange}
+                            ></TextForm>
+                            <TextForm
+                                id="form-description"
+                                label="Description"
+                                as="textarea"
+                                placeholder="Brief Description..."
+                                text="This field will only be generated if the title is present"
+                                value={description}
+                                onChange={handleDescriptionChange}
+                            ></TextForm>
+                            <TextForm
+                                id="form-intro"
+                                label="Introduction"
+                                as="textarea"
+                                placeholder="Why did you create this project..."
+                                value={intro}
+                                onChange={handleIntroChange}
+                            ></TextForm>
+                            <TextForm
+                                id="form-installation "
+                                label="Get Started"
+                                placeholder="Installation instructions..."
+                                as="textarea"
+                                value={installation}
+                                onChange={handleInstallationChange}
+                            ></TextForm>
+                            <TextForm
+                                id="form-usage"
+                                label="Usage"
+                                placeholder="Explain how to use this project..."
+                                as="textarea"
+                                value={usage}
+                                onChange={handleUsageChange}
+                            ></TextForm>
+                            <TextForm
+                                id="form-contribute"
+                                label="Contribute"
+                                placeholder="Explain how people can contribute to this project..."
+                                as="textarea"
+                                value={contribute}
+                                onChange={handleContributeChange}
+                            ></TextForm>
+                            <TextForm
+                                id="form-acknowledgement"
+                                label="Acknowledgements"
+                                placeholder="Anybody you wish to thank for helping or collaborating with you on this project..."
+                                as="textarea"
+                                value={acknowledgements}
+                                onChange={handleAcknowledgementsChange}
+                            ></TextForm>
+                        </Form>
+                    </Col>
+                    <Col md className="d-flex flex-column">
+                        <label>Preview</label>
+                        <Preview markdown={markdown} />
+                    </Col>
+                </Row>
+                <span className="note">
+                    This generator works as a starting point. You can reference
+                    the{" "}
+                    <a
+                        href="https://docs.github.com/en/free-pro-team@latest/github/writing-on-github/basic-writing-and-formatting-syntax"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        docs
+                    </a>{" "}
+                    to furthur customize it to suit your needs.
+                </span>
+                <div>
                     <Button
                         variant="outline-primary mr-2 mb-2"
                         onClick={handleMarkdownClick}
@@ -430,10 +452,10 @@ const App = () => {
                         <BootstrapReboot /> Reset All Inputs
                     </Button>
                 </div>
-                <footer className="text-center mb-5">
-                    Made by Forbes Miyasato
-                </footer>
             </Container>
+            <footer className="text-center mt-3 mb-5">
+                Made by <a href="www.forbesmiyasato.com">Forbes Miyasato</a>
+            </footer>
             <Modal
                 show={modalShow}
                 onHide={() => setModalShow(false)}

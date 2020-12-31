@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { transitions, positions, Provider as AlertProvider } from 'react-alert'
 import AlertTemplate from './components/react-alert-custom-template'
-import App from "./App";
+import App from "./components/App";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // configurations for alerts

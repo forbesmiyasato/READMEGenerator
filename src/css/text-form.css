@@ -1,0 +1,7 @@
+.form-group:last-of-type {
+    margin-bottom: 0;
+}
+
+.form-text:last-of-type {
+    margin-top: 0;
+}
