@@ -5,7 +5,7 @@ import MarkdownPreview from "@uiw/react-markdown-preview";
 const Preview = ({ markdown }) => {
     return (
         <>
-            <div className="border rounded p-2 f-1">
+            <div className="box-readme border rounded p-2 f-1">
                 <div className="box-header d-flex align-content-center flex-justify-between bg-white p-2">
                     <h2 className="box-title">README.md</h2>
                 </div>

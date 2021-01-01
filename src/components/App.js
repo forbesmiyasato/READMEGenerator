@@ -22,6 +22,14 @@ import {
 } from "react-bootstrap-icons";
 import "../css/app.css";
 
+const TITLE_KEY = "title";
+const DESCRIPTION_KEY = "description";
+const INTRODUCTION_KEY = "introduction";
+const INSTALLATION_KEY = "get_started";
+const USAGE_KEY = "usage";
+const CONTRIBUTE_KEY = "contribute";
+const ACKNOWLEDGEMENTS_KEY = "acknowledgements";
+
 const App = () => {
     const [gitHubInfo, setGitHubInfo] = useState({
         username: "",
@@ -238,7 +246,7 @@ const App = () => {
         }
     };
 
-    //Resets all the README text inputs.
+    //Resets all the README text inputs and clears entries in local storage.
     const resetInputs = () => {
         setMarkdown("");
         setTitle("");
@@ -248,7 +256,28 @@ const App = () => {
         setUsage("");
         setContribute("");
         setAcknowledgements("");
+        localStorage.clear();
     };
+
+    //Initialize fields if they exist in local storage
+    useEffect(() => {
+        const localTitle = localStorage.getItem(TITLE_KEY) || "";
+        const localDescription = localStorage.getItem(DESCRIPTION_KEY) || "";
+        const localIntroduction = localStorage.getItem(INTRODUCTION_KEY) || "";
+        const localInstallation = localStorage.getItem(INSTALLATION_KEY) || "";
+        const localUsage = localStorage.getItem(USAGE_KEY) || "";
+        const localContribute = localStorage.getItem(CONTRIBUTE_KEY) || "";
+        const localAcknowledgements =
+            localStorage.getItem(ACKNOWLEDGEMENTS_KEY) || "";
+
+        setTitle(localTitle);
+        setDescription(localDescription);
+        setIntro(localIntroduction);
+        setInstallation(localInstallation);
+        setUsage(localUsage);
+        setContribute(localContribute);
+        setAcknowledgements(localAcknowledgements);
+    }, []);
 
     //Fetch user repo, whenever user repo url changes (happens once user is authenticated)
     useEffect(() => {
@@ -278,19 +307,22 @@ const App = () => {
         }
     }, [gitHubInfo]);
 
-    //Update the markdown content everytime an input field is modified.
+    //Update the markdown content everytime an input field is modified and save it to local storage.
     useEffect(() => {
         let markdown = "";
         if (title) {
             markdown += `# ${title.trim()}\n\n`;
+            localStorage.setItem(TITLE_KEY, title);
             if (description) {
                 markdown += `${description.trim()}\n\n<br />\n\n`;
+                localStorage.setItem(DESCRIPTION_KEY, description);
             }
             markdown += "### Welcome to " + title.trim() + "!\n\n<hr>\n\n";
         }
 
         if (intro) {
             markdown += `${intro.trim()}\n\n<br />\n\n\n`;
+            localStorage.setItem(INTRODUCTION_KEY, intro);
         }
 
         if (installation) {
@@ -298,6 +330,7 @@ const App = () => {
                 '### Get Started <g-emoji class="g-emoji" alias="rocket" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f680.png">🚀</g-emoji>\n\n<hr>\n\n' +
                 installation.trim() +
                 "\n\n<br />\n\n";
+            localStorage.setItem(INSTALLATION_KEY, installation);
         }
 
         if (usage) {
@@ -305,6 +338,7 @@ const App = () => {
                 '### Usage <g-emoji class="g-emoji" alias="gear" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/2699.png">⚙</g-emoji>\n\n<hr>\n\n' +
                 usage.trim() +
                 "\n\n<br />\n\n";
+            localStorage.setItem(USAGE_KEY, usage);
         }
 
         if (contribute) {
@@ -312,6 +346,7 @@ const App = () => {
                 '### Contribute <g-emoji class="g-emoji" alias="toolbox" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f9f0.png">🧰</g-emoji>\n\n<hr>\n\n' +
                 contribute.trim() +
                 "\n\n<br />\n\n";
+            localStorage.setItem(CONTRIBUTE_KEY, contribute);
         }
 
         if (acknowledgements) {
@@ -319,6 +354,7 @@ const App = () => {
                 '### Acknowledgements <g-emoji class="g-emoji" alias="blue_heart" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f499.png">💙</g-emoji>\n\n<hr>\n\n' +
                 acknowledgements.trim() +
                 "\n\n<br />\n";
+            localStorage.setItem(ACKNOWLEDGEMENTS_KEY, acknowledgements);
         }
 
         setMarkdown(markdown);
@@ -339,7 +375,7 @@ const App = () => {
             </h1>
             <Container className="border border-light shadow-sm rounded p-2 bg-white">
                 <Row>
-                    <Col md>
+                    <Col sm>
                         <Form onKeyDown={handleKeyDown}>
                             <TextForm
                                 id="form-title"
@@ -401,12 +437,12 @@ const App = () => {
                             ></TextForm>
                         </Form>
                     </Col>
-                    <Col md className="d-flex flex-column">
+                    <Col sm className="flex-column d-none d-sm-flex">
                         <label>Preview</label>
                         <Preview markdown={markdown} />
                     </Col>
                 </Row>
-                <span className="note">
+                <p className="note mt-2 mb-2">
                     This generator works as a starting point. You can reference
                     the{" "}
                     <a
@@ -417,7 +453,7 @@ const App = () => {
                         docs
                     </a>{" "}
                     to furthur customize it to suit your needs.
-                </span>
+                </p>
                 <div>
                     <Button
                         variant="outline-primary mr-2 mb-2"
@@ -434,6 +470,7 @@ const App = () => {
                     <Button
                         variant="outline-info mr-2 mb-2"
                         onClick={handlePreviewClick}
+                        className="d-sm-none"
                     >
                         <Eye /> Preview
                     </Button>
@@ -454,7 +491,8 @@ const App = () => {
                 </div>
             </Container>
             <footer className="text-center mt-3 mb-5">
-                Made by <a href="www.forbesmiyasato.com">Forbes Miyasato</a>
+                Made by{" "}
+                <a href="https://www.forbesmiyasato.com">Forbes Miyasato</a>
             </footer>
             <Modal
                 show={modalShow}
