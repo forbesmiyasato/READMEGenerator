@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -21,6 +21,7 @@ import {
     ArrowBarLeft,
 } from "react-bootstrap-icons";
 import "../css/app.css";
+import DraggableList from "./DraggableList";
 
 const TITLE_KEY = "title";
 const DESCRIPTION_KEY = "description";
@@ -47,6 +48,7 @@ const App = () => {
     const [acknowledgements, setAcknowledgements] = useState("");
     const [modalShow, setModalShow] = useState(false);
     const [modalType, setModalType] = useState("");
+    const [order, setOrder] = useState([0, 1, 2, 3, 4]); // 0 - installation, 1 - usage, 2 - contribute, 3 - acknowledgements
     const alert = useAlert();
 
     //initialize firebase
@@ -325,37 +327,39 @@ const App = () => {
             localStorage.setItem(INTRODUCTION_KEY, intro);
         }
 
-        if (installation) {
-            markdown +=
-                '### Get Started <g-emoji class="g-emoji" alias="rocket" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f680.png">🚀</g-emoji>\n\n<hr>\n\n' +
-                installation.trim() +
-                "\n\n<br />\n\n";
-            localStorage.setItem(INSTALLATION_KEY, installation);
-        }
-
-        if (usage) {
-            markdown +=
-                '### Usage <g-emoji class="g-emoji" alias="gear" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/2699.png">⚙</g-emoji>\n\n<hr>\n\n' +
-                usage.trim() +
-                "\n\n<br />\n\n";
-            localStorage.setItem(USAGE_KEY, usage);
-        }
-
-        if (contribute) {
-            markdown +=
-                '### Contribute <g-emoji class="g-emoji" alias="toolbox" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f9f0.png">🧰</g-emoji>\n\n<hr>\n\n' +
-                contribute.trim() +
-                "\n\n<br />\n\n";
-            localStorage.setItem(CONTRIBUTE_KEY, contribute);
-        }
-
-        if (acknowledgements) {
-            markdown +=
-                '### Acknowledgements <g-emoji class="g-emoji" alias="blue_heart" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f499.png">💙</g-emoji>\n\n<hr>\n\n' +
-                acknowledgements.trim() +
-                "\n\n<br />\n";
-            localStorage.setItem(ACKNOWLEDGEMENTS_KEY, acknowledgements);
-        }
+        order.forEach(num => {
+            if (num === 0 && installation) {
+                markdown +=
+                    '### Get Started <g-emoji class="g-emoji" alias="rocket" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f680.png">🚀</g-emoji>\n\n<hr>\n\n' +
+                    installation.trim() +
+                    "\n\n<br />\n\n";
+                localStorage.setItem(INSTALLATION_KEY, installation);
+            }
+    
+            if (num === 1 && usage) {
+                markdown +=
+                    '### Usage <g-emoji class="g-emoji" alias="gear" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/2699.png">⚙</g-emoji>\n\n<hr>\n\n' +
+                    usage.trim() +
+                    "\n\n<br />\n\n";
+                localStorage.setItem(USAGE_KEY, usage);
+            }
+    
+            if (num === 2 && contribute) {
+                markdown +=
+                    '### Contribute <g-emoji class="g-emoji" alias="toolbox" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f9f0.png">🧰</g-emoji>\n\n<hr>\n\n' +
+                    contribute.trim() +
+                    "\n\n<br />\n\n";
+                localStorage.setItem(CONTRIBUTE_KEY, contribute);
+            }
+    
+            if (num === 3 && acknowledgements) {
+                markdown +=
+                    '### Acknowledgements <g-emoji class="g-emoji" alias="blue_heart" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f499.png">💙</g-emoji>\n\n<hr>\n\n' +
+                    acknowledgements.trim() +
+                    "\n\n<br />\n\n";
+                localStorage.setItem(ACKNOWLEDGEMENTS_KEY, acknowledgements);
+            }
+        })
 
         setMarkdown(markdown);
     }, [
@@ -366,7 +370,49 @@ const App = () => {
         usage,
         contribute,
         acknowledgements,
+        order
     ]);
+
+    const textForms = [
+        <TextForm
+            id="form-installation "
+            label="Get Started"
+            placeholder="Installation instructions..."
+            as="textarea"
+            value={installation}
+            onChange={handleInstallationChange}
+        />,
+        <TextForm
+            id="form-usage"
+            label="Usage"
+            placeholder="Explain how to use this project..."
+            as="textarea"
+            value={usage}
+            onChange={handleUsageChange}
+        />,
+        <TextForm
+            id="form-contribute"
+            label="Contribute"
+            placeholder="Explain how people can contribute to this project..."
+            as="textarea"
+            value={contribute}
+            onChange={handleContributeChange}
+        />,
+        <TextForm
+            id="form-acknowledgement"
+            label="Acknowledgements"
+            placeholder="Anybody you wish to thank for helping or collaborating with you on this project..."
+            as="textarea"
+            value={acknowledgements}
+            onChange={handleAcknowledgementsChange}
+        />,
+    ];
+
+    const onOrderSwap = (order) => {
+        setOrder(order);
+    };
+
+    console.log(order);
 
     return (
         <div className="App">
@@ -385,7 +431,8 @@ const App = () => {
                                 text="All inputs are currently optional"
                                 value={title}
                                 onChange={handleTitleChange}
-                            ></TextForm>
+                            />
+                            ,
                             <TextForm
                                 id="form-description"
                                 label="Description"
@@ -394,7 +441,8 @@ const App = () => {
                                 text="This field will only be generated if the title is present"
                                 value={description}
                                 onChange={handleDescriptionChange}
-                            ></TextForm>
+                            />
+                            ,
                             <TextForm
                                 id="form-intro"
                                 label="Introduction"
@@ -402,39 +450,11 @@ const App = () => {
                                 placeholder="Why did you create this project..."
                                 value={intro}
                                 onChange={handleIntroChange}
-                            ></TextForm>
-                            <TextForm
-                                id="form-installation "
-                                label="Get Started"
-                                placeholder="Installation instructions..."
-                                as="textarea"
-                                value={installation}
-                                onChange={handleInstallationChange}
-                            ></TextForm>
-                            <TextForm
-                                id="form-usage"
-                                label="Usage"
-                                placeholder="Explain how to use this project..."
-                                as="textarea"
-                                value={usage}
-                                onChange={handleUsageChange}
-                            ></TextForm>
-                            <TextForm
-                                id="form-contribute"
-                                label="Contribute"
-                                placeholder="Explain how people can contribute to this project..."
-                                as="textarea"
-                                value={contribute}
-                                onChange={handleContributeChange}
-                            ></TextForm>
-                            <TextForm
-                                id="form-acknowledgement"
-                                label="Acknowledgements"
-                                placeholder="Anybody you wish to thank for helping or collaborating with you on this project..."
-                                as="textarea"
-                                value={acknowledgements}
-                                onChange={handleAcknowledgementsChange}
-                            ></TextForm>
+                            />
+                            <DraggableList
+                                items={textForms}
+                                onDown={onOrderSwap}
+                            />
                         </Form>
                     </Col>
                     <Col sm className="flex-column d-none d-sm-flex">
