@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -90,7 +90,7 @@ const App = () => {
         if (event.keyCode === 13) {
             event.preventDefault();
         }
-        console.log("test")
+        console.log("test");
     };
 
     //The following 7 methods are to handle user data input.
@@ -264,8 +264,8 @@ const App = () => {
         localStorage.clear();
     };
 
-    //draggable text fields, use ref to preserve the value after each rerender 
-    const textForms = useRef([
+    //use ref to preserve the value after each rerender
+    let textForms = [
         <TextForm
             id="form-installation "
             label="Get Started"
@@ -298,7 +298,7 @@ const App = () => {
             value={acknowledgements}
             onChange={handleAcknowledgementsChange}
         />,
-    ]);
+    ];
 
     //Initialize fields if they exist in local storage
     useEffect(() => {
@@ -314,15 +314,6 @@ const App = () => {
         let localOrder = localStorage.getItem(ORDER_KEY);
         localOrder = localOrder ? JSON.parse(localOrder) : [0, 1, 2, 3];
 
-        let newTextForms = [];
-
-        localOrder.forEach(num => {
-            newTextForms.push(textForms.current[num]);
-        })
-
-        console.log(newTextForms);
-        textForms.current = newTextForms;
-
         setTitle(localTitle);
         setDescription(localDescription);
         setIntro(localIntroduction);
@@ -332,6 +323,26 @@ const App = () => {
         setAcknowledgements(localAcknowledgements);
         setOrder(localOrder);
     }, []);
+
+    console.log(order);
+    //Reorder text forms based on the order. We technically only want this to happen when the page first loads to
+    //list the input fields in the order saved in localstorage. I tried couple ways but couldn't get it to work for only first load.
+    //TODO: Reorder text forms only onload instead of every rerender.
+    // useLayoutEffect(() => {
+    //     const reorder = () => {
+    //         console.log("called");
+    //         let newTextForms = [];
+    //         order.forEach((num) => {
+    //             console.log(num);
+    //             console.log(textForms[num].props.label);
+    //             newTextForms.push(textForms[num]);
+    //         });
+
+    //         textForms = newTextForms;
+    //     };
+
+    //     reorder();
+    // }, []);
 
     //Fetch user repo, whenever user repo url changes (happens once user is authenticated)
     useEffect(() => {
@@ -425,11 +436,9 @@ const App = () => {
         acknowledgements,
         order,
     ]);
-    
 
     const onOrderSwap = (order) => {
         setOrder(order);
-        console.log(order);
     };
 
     return (
@@ -471,6 +480,7 @@ const App = () => {
                             <DraggableList
                                 items={textForms}
                                 onDown={onOrderSwap}
+                                order={order}
                             />
                         </Form>
                     </Col>

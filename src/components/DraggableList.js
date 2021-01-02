@@ -1,6 +1,6 @@
 // Original: https://github.com/chenglou/react-motion/tree/master/demos/demo8-draggable-list
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import clamp from "lodash-es/clamp";
 import swap from "lodash-move";
 import { useGesture } from "react-with-gesture";
@@ -31,23 +31,22 @@ const fn = (order, down, originalIndex, curIndex, y) => (index) =>
               immediate: false,
           };
 
-function DraggableList({ items, onDown }) {
-    console.log(items);
-    const order = useRef(items.current.map((_, index) => index)); // Store indices as a local ref, this represents the item order
+function DraggableList({ items, onDown, order }) {    
+    const orderRef = useRef(items.map((_, index) => index)); // Store indices as a local ref, this represents the item order
     /*
     Curries the default order for the initial, "rested" list state.
     Only the order array is relevant when the items aren't being dragged, thus
     the other arguments from fn don't need to be supplied initially.
   */
-    const [springs, setSprings] = useSprings(items.current.length, fn(order.current));
+    const [springs, setSprings] = useSprings(items.length, fn(orderRef.current));
     const bind = useGesture(({ args: [originalIndex], down, delta: [, y] }) => {
-        const curIndex = order.current.indexOf(originalIndex);
+        const curIndex = orderRef.current.indexOf(originalIndex);
         const curRow = clamp(
             Math.round((curIndex * 100 + y) / 100),
             0,
-            items.current.length - 1
+            items.length - 1
         );
-        const newOrder = swap(order.current, curIndex, curRow);
+        const newOrder = swap(orderRef.current, curIndex, curRow);
         /*
       Curry all variables needed for the truthy clause of the ternary expression from fn,
       so that new objects are fed to the springs without triggering a re-render.
@@ -55,13 +54,16 @@ function DraggableList({ items, onDown }) {
         setSprings(fn(newOrder, down, originalIndex, curIndex, y));
         // Settles the new order on the end of the drag gesture (when down is false)
         if (!down) {
-            order.current = newOrder;
-            onDown(order.current);
+            orderRef.current = newOrder;
+            onDown(orderRef.current);
         }
     });
-    
+
+    // console.log(order)
+    // let map = new Map(order.map((num, index) => [index, num]));
+    // console.log(map);
     return (
-        <div className="content" style={{ height: items.current.length * 100 }}>
+        <div className="content" style={{ height: items.length * 100 }}>
             {springs.map(({ zIndex, shadow, y, scale }, i) => (
                 <animated.div
                     {...bind(i)}
@@ -77,7 +79,7 @@ function DraggableList({ items, onDown }) {
                             (y, s) => `translate3d(0,${y}px,0) scale(${s})`
                         ),
                     }}
-                    children={items.current[i]}
+                    children={items[i]}
                 />
             ))}
         </div>
