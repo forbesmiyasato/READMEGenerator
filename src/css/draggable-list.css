@@ -1,0 +1,33 @@
+.content {
+    position: relative;
+    width: 100%;
+    height: 240px;
+}
+
+.content > div {
+    position: absolute;
+    width: 100%;
+    overflow: visible;
+    pointer-events: auto;
+    transform-origin: 50% 50% 0px;
+    border-radius: 5px;
+    /* color: white; */
+    /* padding-left: 32px; */
+    font-size: 14.5px;
+    background: lightblue;
+    /* text-transform: uppercase; */
+    /* letter-spacing: 2px; */
+}
+
+.content .form-installation {
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+}
+.content .form-usage {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+.content .form-contribute {
+    background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
+}
+.content .form-acknowledgement {
+    background: linear-gradient(135deg, #c3cfe2 0%, #c3cfe2 100%);
+}

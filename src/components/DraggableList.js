@@ -5,7 +5,6 @@ import clamp from "lodash-es/clamp";
 import swap from "lodash-move";
 import { useGesture } from "react-with-gesture";
 import { useSprings, animated, interpolate } from "react-spring";
-import "./styles.css";
 
 // WHEN dragging, this function will be fed with all arguments.
 // OTHERWISE, only the list order is relevant.
@@ -33,19 +32,20 @@ const fn = (order, down, originalIndex, curIndex, y) => (index) =>
           };
 
 function DraggableList({ items, onDown }) {
-    const order = useRef(items.map((_, index) => index)); // Store indices as a local ref, this represents the item order
+    console.log(items);
+    const order = useRef(items.current.map((_, index) => index)); // Store indices as a local ref, this represents the item order
     /*
     Curries the default order for the initial, "rested" list state.
     Only the order array is relevant when the items aren't being dragged, thus
     the other arguments from fn don't need to be supplied initially.
   */
-    const [springs, setSprings] = useSprings(items.length, fn(order.current));
+    const [springs, setSprings] = useSprings(items.current.length, fn(order.current));
     const bind = useGesture(({ args: [originalIndex], down, delta: [, y] }) => {
         const curIndex = order.current.indexOf(originalIndex);
         const curRow = clamp(
             Math.round((curIndex * 100 + y) / 100),
             0,
-            items.length - 1
+            items.current.length - 1
         );
         const newOrder = swap(order.current, curIndex, curRow);
         /*
@@ -61,7 +61,7 @@ function DraggableList({ items, onDown }) {
     });
     
     return (
-        <div className="content" style={{ height: items.length * 210 }}>
+        <div className="content" style={{ height: items.current.length * 100 }}>
             {springs.map(({ zIndex, shadow, y, scale }, i) => (
                 <animated.div
                     {...bind(i)}
@@ -77,7 +77,7 @@ function DraggableList({ items, onDown }) {
                             (y, s) => `translate3d(0,${y}px,0) scale(${s})`
                         ),
                     }}
-                    children={items[i]}
+                    children={items.current[i]}
                 />
             ))}
         </div>

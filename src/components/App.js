@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -30,6 +30,8 @@ const INSTALLATION_KEY = "get_started";
 const USAGE_KEY = "usage";
 const CONTRIBUTE_KEY = "contribute";
 const ACKNOWLEDGEMENTS_KEY = "acknowledgements";
+const TECHNOLOGIES_KEY = "technologies";
+const ORDER_KEY = "order";
 
 const App = () => {
     const [gitHubInfo, setGitHubInfo] = useState({
@@ -48,7 +50,7 @@ const App = () => {
     const [acknowledgements, setAcknowledgements] = useState("");
     const [modalShow, setModalShow] = useState(false);
     const [modalType, setModalType] = useState("");
-    const [order, setOrder] = useState([0, 1, 2, 3, 4]); // 0 - installation, 1 - usage, 2 - contribute, 3 - acknowledgements
+    const [order, setOrder] = useState([0, 1, 2, 3]); // 0 - installation, 1 - usage, 2 - contribute, 3 - acknowledgements
     const alert = useAlert();
 
     //initialize firebase
@@ -88,6 +90,7 @@ const App = () => {
         if (event.keyCode === 13) {
             event.preventDefault();
         }
+        console.log("test")
     };
 
     //The following 7 methods are to handle user data input.
@@ -261,6 +264,42 @@ const App = () => {
         localStorage.clear();
     };
 
+    //draggable text fields, use ref to preserve the value after each rerender 
+    const textForms = useRef([
+        <TextForm
+            id="form-installation "
+            label="Get Started"
+            placeholder="Installation instructions..."
+            as="textarea"
+            value={installation}
+            onChange={handleInstallationChange}
+        />,
+        <TextForm
+            id="form-usage"
+            label="Usage"
+            placeholder="Explain how to use this project..."
+            as="textarea"
+            value={usage}
+            onChange={handleUsageChange}
+        />,
+        <TextForm
+            id="form-contribute"
+            label="Contribute"
+            placeholder="Explain how people can contribute to this project..."
+            as="textarea"
+            value={contribute}
+            onChange={handleContributeChange}
+        />,
+        <TextForm
+            id="form-acknowledgement"
+            label="Acknowledgements"
+            placeholder="Anybody you wish to thank for helping or collaborating with you on this project..."
+            as="textarea"
+            value={acknowledgements}
+            onChange={handleAcknowledgementsChange}
+        />,
+    ]);
+
     //Initialize fields if they exist in local storage
     useEffect(() => {
         const localTitle = localStorage.getItem(TITLE_KEY) || "";
@@ -272,6 +311,18 @@ const App = () => {
         const localAcknowledgements =
             localStorage.getItem(ACKNOWLEDGEMENTS_KEY) || "";
 
+        let localOrder = localStorage.getItem(ORDER_KEY);
+        localOrder = localOrder ? JSON.parse(localOrder) : [0, 1, 2, 3];
+
+        let newTextForms = [];
+
+        localOrder.forEach(num => {
+            newTextForms.push(textForms.current[num]);
+        })
+
+        console.log(newTextForms);
+        textForms.current = newTextForms;
+
         setTitle(localTitle);
         setDescription(localDescription);
         setIntro(localIntroduction);
@@ -279,6 +330,7 @@ const App = () => {
         setUsage(localUsage);
         setContribute(localContribute);
         setAcknowledgements(localAcknowledgements);
+        setOrder(localOrder);
     }, []);
 
     //Fetch user repo, whenever user repo url changes (happens once user is authenticated)
@@ -327,7 +379,7 @@ const App = () => {
             localStorage.setItem(INTRODUCTION_KEY, intro);
         }
 
-        order.forEach(num => {
+        order.forEach((num) => {
             if (num === 0 && installation) {
                 markdown +=
                     '### Get Started <g-emoji class="g-emoji" alias="rocket" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f680.png">🚀</g-emoji>\n\n<hr>\n\n' +
@@ -335,7 +387,7 @@ const App = () => {
                     "\n\n<br />\n\n";
                 localStorage.setItem(INSTALLATION_KEY, installation);
             }
-    
+
             if (num === 1 && usage) {
                 markdown +=
                     '### Usage <g-emoji class="g-emoji" alias="gear" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/2699.png">⚙</g-emoji>\n\n<hr>\n\n' +
@@ -343,7 +395,7 @@ const App = () => {
                     "\n\n<br />\n\n";
                 localStorage.setItem(USAGE_KEY, usage);
             }
-    
+
             if (num === 2 && contribute) {
                 markdown +=
                     '### Contribute <g-emoji class="g-emoji" alias="toolbox" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f9f0.png">🧰</g-emoji>\n\n<hr>\n\n' +
@@ -351,7 +403,7 @@ const App = () => {
                     "\n\n<br />\n\n";
                 localStorage.setItem(CONTRIBUTE_KEY, contribute);
             }
-    
+
             if (num === 3 && acknowledgements) {
                 markdown +=
                     '### Acknowledgements <g-emoji class="g-emoji" alias="blue_heart" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f499.png">💙</g-emoji>\n\n<hr>\n\n' +
@@ -359,8 +411,9 @@ const App = () => {
                     "\n\n<br />\n\n";
                 localStorage.setItem(ACKNOWLEDGEMENTS_KEY, acknowledgements);
             }
-        })
+        });
 
+        localStorage.setItem(ORDER_KEY, JSON.stringify(order));
         setMarkdown(markdown);
     }, [
         title,
@@ -370,49 +423,14 @@ const App = () => {
         usage,
         contribute,
         acknowledgements,
-        order
+        order,
     ]);
-
-    const textForms = [
-        <TextForm
-            id="form-installation "
-            label="Get Started"
-            placeholder="Installation instructions..."
-            as="textarea"
-            value={installation}
-            onChange={handleInstallationChange}
-        />,
-        <TextForm
-            id="form-usage"
-            label="Usage"
-            placeholder="Explain how to use this project..."
-            as="textarea"
-            value={usage}
-            onChange={handleUsageChange}
-        />,
-        <TextForm
-            id="form-contribute"
-            label="Contribute"
-            placeholder="Explain how people can contribute to this project..."
-            as="textarea"
-            value={contribute}
-            onChange={handleContributeChange}
-        />,
-        <TextForm
-            id="form-acknowledgement"
-            label="Acknowledgements"
-            placeholder="Anybody you wish to thank for helping or collaborating with you on this project..."
-            as="textarea"
-            value={acknowledgements}
-            onChange={handleAcknowledgementsChange}
-        />,
-    ];
+    
 
     const onOrderSwap = (order) => {
         setOrder(order);
+        console.log(order);
     };
-
-    console.log(order);
 
     return (
         <div className="App">
@@ -422,7 +440,7 @@ const App = () => {
             <Container className="border border-light shadow-sm rounded p-2 bg-white">
                 <Row>
                     <Col sm>
-                        <Form onKeyDown={handleKeyDown}>
+                        <Form>
                             <TextForm
                                 id="form-title"
                                 label="Title"
@@ -431,8 +449,8 @@ const App = () => {
                                 text="All inputs are currently optional"
                                 value={title}
                                 onChange={handleTitleChange}
+                                onKeyDown={handleKeyDown}
                             />
-                            ,
                             <TextForm
                                 id="form-description"
                                 label="Description"
@@ -442,7 +460,6 @@ const App = () => {
                                 value={description}
                                 onChange={handleDescriptionChange}
                             />
-                            ,
                             <TextForm
                                 id="form-intro"
                                 label="Introduction"
