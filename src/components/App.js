@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
+import React, { useEffect, useState } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import 'firebase/analytics'
 import config from "../config";
 import axios from "axios";
 import TextForm from "./textForm";
@@ -56,6 +57,7 @@ const App = () => {
     //initialize firebase
     if (!firebase.apps.length) {
         firebase.initializeApp(config);
+        firebase.analytics();
     }
 
     //set up the provider for firebase authentication
@@ -381,17 +383,14 @@ const App = () => {
         let markdown = "";
         if (title) {
             markdown += `# ${title.trim()}\n\n`;
-            localStorage.setItem(TITLE_KEY, title);
             if (description) {
                 markdown += `${description.trim()}\n\n<br />\n\n`;
-                localStorage.setItem(DESCRIPTION_KEY, description);
             }
             markdown += "### Welcome to " + title.trim() + "!\n\n<hr>\n\n";
         }
 
         if (intro) {
             markdown += `${intro.trim()}\n\n<br />\n\n\n`;
-            localStorage.setItem(INTRODUCTION_KEY, intro);
         }
 
         order.forEach((num) => {
@@ -400,7 +399,6 @@ const App = () => {
                     '### Get Started <g-emoji class="g-emoji" alias="rocket" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f680.png">🚀</g-emoji>\n\n<hr>\n\n' +
                     installation.trim() +
                     "\n\n<br />\n\n";
-                localStorage.setItem(INSTALLATION_KEY, installation);
             }
 
             if (num === 1 && usage) {
@@ -408,7 +406,6 @@ const App = () => {
                     '### Usage <g-emoji class="g-emoji" alias="gear" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/2699.png">⚙</g-emoji>\n\n<hr>\n\n' +
                     usage.trim() +
                     "\n\n<br />\n\n";
-                localStorage.setItem(USAGE_KEY, usage);
             }
 
             if (num === 2 && contribute) {
@@ -416,7 +413,6 @@ const App = () => {
                     '### Contribute <g-emoji class="g-emoji" alias="toolbox" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f9f0.png">🧰</g-emoji>\n\n<hr>\n\n' +
                     contribute.trim() +
                     "\n\n<br />\n\n";
-                localStorage.setItem(CONTRIBUTE_KEY, contribute);
             }
 
             if (num === 3 && acknowledgements) {
@@ -424,10 +420,15 @@ const App = () => {
                     '### Acknowledgements <g-emoji class="g-emoji" alias="blue_heart" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f499.png">💙</g-emoji>\n\n<hr>\n\n' +
                     acknowledgements.trim() +
                     "\n\n<br />\n\n";
-                localStorage.setItem(ACKNOWLEDGEMENTS_KEY, acknowledgements);
             }
         });
-
+        localStorage.setItem(TITLE_KEY, title);
+        localStorage.setItem(DESCRIPTION_KEY, description);
+        localStorage.setItem(INTRODUCTION_KEY, intro);
+        localStorage.setItem(INSTALLATION_KEY, installation);
+        localStorage.setItem(USAGE_KEY, usage);
+        localStorage.setItem(CONTRIBUTE_KEY, contribute);
+        localStorage.setItem(ACKNOWLEDGEMENTS_KEY, acknowledgements);
         localStorage.setItem(ORDER_KEY, JSON.stringify(order));
         setMarkdown(markdown);
     }, [
