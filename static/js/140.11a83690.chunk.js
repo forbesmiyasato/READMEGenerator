@@ -1,0 +1,2 @@
+(this.webpackJsonpreadme_generator=this.webpackJsonpreadme_generator||[]).push([[140],{218:function(e,m){Prism.languages.git={comment:/^#.*/m,deleted:/^[-\u2013].*/m,inserted:/^\+.*/m,string:/("|')(?:\\.|(?!\1)[^\\\r\n])*\1/m,command:{pattern:/^.*\$ git .*$/m,inside:{parameter:/\s--?\w+/m}},coord:/^@@.*@@$/m,commit_sha1:/^commit \w{40}$/m}}}]);
+//# sourceMappingURL=140.11a83690.chunk.js.map

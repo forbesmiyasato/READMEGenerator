@@ -1,0 +1,2 @@
+(this.webpackJsonpreadme_generator=this.webpackJsonpreadme_generator||[]).push([[176],{254:function(e,n){!function(e){e.languages.ignore={comment:/^#.*/m,entry:{pattern:/\S(?:.*(?:(?:\\ )|\S))?/,alias:"string",inside:{operator:/^!|\*\*?|\?/,regex:{pattern:/(^|[^\\])\[[^\[\]]*\]/,lookbehind:!0},punctuation:/\//}}},e.languages.gitignore=e.languages.ignore,e.languages.hgignore=e.languages.ignore,e.languages.npmignore=e.languages.ignore}(Prism)}}]);
+//# sourceMappingURL=176.0deae9bf.chunk.js.map

@@ -1,2 +1,0 @@
-(this.webpackJsonpreadme_generator=this.webpackJsonpreadme_generator||[]).push([[442],{519:function(e,a){!function(e){function a(a,n){e.languages[a]&&e.languages.insertBefore(a,"comment",{"doc-comment":n})}var n=e.languages.markup.tag,t={pattern:/\/\/\/.*/,greedy:!0,alias:"comment",inside:{tag:n}},r={pattern:/'''.*/,greedy:!0,alias:"comment",inside:{tag:n}};a("csharp",t),a("fsharp",t),a("vbnet",r)}(Prism)}}]);
-//# sourceMappingURL=442.5809ce7a.chunk.js.map

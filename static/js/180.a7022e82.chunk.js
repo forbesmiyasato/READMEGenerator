@@ -1,2 +1,0 @@
-(this.webpackJsonpreadme_generator=this.webpackJsonpreadme_generator||[]).push([[180],{257:function(t,e){Prism.languages.ini={comment:/^[ \t]*[;#].*$/m,selector:/^[ \t]*\[.*?\]/m,constant:/^[ \t]*[^\s=]+?(?=[ \t]*=)/m,"attr-value":{pattern:/=.*/,inside:{punctuation:/^[=]/}}}}}]);
-//# sourceMappingURL=180.a7022e82.chunk.js.map
