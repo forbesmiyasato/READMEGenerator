@@ -1,6 +1,6 @@
 import React from "react";
 import Form from "react-bootstrap/Form";
-
+import { Justify } from "react-bootstrap-icons";
 //Text input custom componenet to reduce repeated code.
 const TextForm = (props) => {
     const {
@@ -13,11 +13,15 @@ const TextForm = (props) => {
         onChange,
         value,
         onKeyDown,
+        stackable
     } = props;
 
     return (
         <Form.Group className={id} controlId={id}>
+            <div className={stackable && "d-flex flex-row justify-content-between p-1 align-items-center"}>
             <Form.Label>{label}</Form.Label>
+            {stackable && <Justify />}
+            </div>
             <Form.Control
                 value={value}
                 onChange={onChange}

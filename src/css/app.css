@@ -27,3 +27,7 @@ body:not(.box-readme) {
 .note {
     font-size: 12px;
 }
+
+label {
+    margin-bottom: 0 !important;
+}

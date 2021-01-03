@@ -19,6 +19,9 @@
     /* letter-spacing: 2px; */
 }
 
+.content .form-group {
+    border-radius: 5px;
+}
 .content .form-installation {
     background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
 }

@@ -273,6 +273,7 @@ const App = () => {
             as="textarea"
             value={installation}
             onChange={handleInstallationChange}
+            stackable={true}
         />,
         <TextForm
             id="form-usage"
@@ -281,6 +282,7 @@ const App = () => {
             as="textarea"
             value={usage}
             onChange={handleUsageChange}
+            stackable={true}
         />,
         <TextForm
             id="form-contribute"
@@ -289,6 +291,7 @@ const App = () => {
             as="textarea"
             value={contribute}
             onChange={handleContributeChange}
+            stackable={true}
         />,
         <TextForm
             id="form-acknowledgement"
@@ -297,6 +300,7 @@ const App = () => {
             as="textarea"
             value={acknowledgements}
             onChange={handleAcknowledgementsChange}
+            stackable={true}
         />,
     ];
 
